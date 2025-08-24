@@ -120,7 +120,7 @@ def preprocess_one_image_fn(image_path, fix_scale, width=224, height=224):
 
 SCRIPT_DIR = get_script_directory()
 # calib_image_dir = SCRIPT_DIR + "/../images/"
-calib_image_dir =  SCRIPT_DIR + "/../flat_images"
+calib_image_dir =  SCRIPT_DIR + "/../flat_images_test"
 # calib_image_dir =  SCRIPT_DIR + "/../Vitis-AI/examples/vai_library/samples/classification/images/"
 
 global threadnum
@@ -248,10 +248,9 @@ if __name__ == "__main__":
     if len(sys.argv) != 3:
         print("usage : python3 inception_v1.py <thread_number> <inception_v1_model_file>")
     else:
-        #main(sys.argv)
-        for i in range(20):
-            #cProfile.run("main(sys.argv)")
-            main(sys.argv)
-        with open('output.txt', 'w') as file:
-            for item in list_record:
-                file.write(str(item) + '\n')
+        for i in range(1):
+            cProfile.run("main(sys.argv)")
+            #main(sys.argv)
+        #with open('output.txt', 'w') as file:
+        #    for item in list_record:
+        #        file.write(str(item) + '\n')

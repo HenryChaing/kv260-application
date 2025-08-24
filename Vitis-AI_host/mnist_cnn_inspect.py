@@ -219,6 +219,13 @@ elif(1) :
     y_int8_value = float_to_ap_fixed_16_6(y_train_val)
     np.save('y_train_int8_val.npy', y_int8_value)
     print(y_int8_value[0:3])
+
+    x_int8_value = float_to_ap_fixed_16_6(X_test)
+    x_int8_value_c = x_int8_value.copy(order='C')
+    np.save('X_test_int8_val.npy', x_int8_value_c)
+
+    y_int8_value = float_to_ap_fixed_16_6(y_test)
+    np.save('y_test_int8_val.npy', y_int8_value)
     ### int8 npy end ###
     
     ## Now construct a model ##
