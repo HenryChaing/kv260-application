@@ -78,8 +78,8 @@ int main(int argc, char *argv[])
         return EXIT_FAILURE;
     }
 
-    // n_rows = arr_x->shape[0];
-    n_rows = 10;
+    n_rows = arr_x->shape[0];
+    // n_rows = 3;
     n_cols = arr_x->shape[1];
         
 /*** NPU part ***/
@@ -89,20 +89,22 @@ int main(int argc, char *argv[])
         for (int i = 0; i < n_cols; i++) {
             arg_content.npu_array[i] = *(array_x + turn * n_cols + i);
         }
-
+        
         ret = ioctl(fd , RTOS_NPU_SET_SHMEM_VALUE, &arg_content);
         if(ret < 0)
         {
-            printf("ioctl error!\n");
+            printf("RTOS_NPU_SET_SHMEM_VALUE error!\n");
             close(fd);
+            return 1;
         }
 
         cmd.cmd_id = 1;
         ret = ioctl(fd , RTOS_NPU_SET_CTRL_VALUE, &cmd);
         if(ret < 0)
         {
-            printf("ioctl error!\n");
+            printf("RTOS_NPU_SET_CTRL_VALUE error!\n");
             close(fd);
+            return 1;
         }
         // printf("A53: write control value\n");
 
@@ -110,16 +112,18 @@ int main(int argc, char *argv[])
         ret = ioctl(fd , RTOS_NPU_GET_CTRL_VALUE, &cmd);
         if(ret < 0)
         {
-            printf("ioctl error!\n");
+            printf("RTOS_NPU_GET_CTRL_VALUE error!\n");
             close(fd);
+            return 1;
         }
         // printf("A53: write control value %d\n",cmd.cmd_id);
-        
+
         ret = ioctl(fd , RTOS_NPU_GET_SHMEM_VALUE, &arg_content);
         if(ret < 0)
         {
-            printf("ioctl error!\n");
+            printf("RTOS_NPU_GET_SHMEM_VALUE error!\n");
             close(fd);
+            return 1;
         }
         
         for (int i = 0; i < 5; i++) {    
@@ -127,11 +131,15 @@ int main(int argc, char *argv[])
                 max_id_output = i;
                 max_val_output = arg_content.npu_array[i];
             }
+            // printf("%x\n", *(array_y + turn * n_cols + i));
             if (*(array_y + turn * n_cols + i) > max_val_y){
                 max_id_y = i;
                 max_val_y = *(array_y + turn * n_cols + i);
             }
         }
+        max_val_output = 0;max_id_output = 0;
+        max_val_y = 0; max_id_y = 0;
+        // printf("----\n");
         if (max_id_output == max_id_y){
             score++;
         }
